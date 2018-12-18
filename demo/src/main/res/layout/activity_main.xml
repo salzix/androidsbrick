@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/buttonStop_D"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Stop"
+        app:layout_constraintStart_toEndOf="@+id/buttonDriveBack_D"
+        app:layout_constraintTop_toBottomOf="@+id/textChannelD" />
+
+    <Button
+        android:id="@+id/buttonDriveBack_D"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Drive BW"
+        app:layout_constraintStart_toEndOf="@+id/buttonDrive_D"
+        app:layout_constraintTop_toBottomOf="@+id/textChannelD" />
+
+    <Button
+        android:id="@+id/buttonDrive_D"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="Drive FW"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textChannelD" />
+
+    <TextView
+        android:id="@+id/textChannelD"
+        android:layout_width="323dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:text="Channel D"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonDrive_C" />
+
+    <Button
+        android:id="@+id/buttonStop_C"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="Stop"
+        app:layout_constraintStart_toEndOf="@+id/buttonDriveBack_C"
+        app:layout_constraintTop_toBottomOf="@+id/textChannelC" />
+
+    <TextView
+        android:id="@+id/textChannelC"
+        android:layout_width="323dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:text="Channel C"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonDrive_B" />
+
+    <Button
+        android:id="@+id/buttonDrive_C"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="Drive FW"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textChannelC" />
+
+    <Button
+        android:id="@+id/buttonDriveBack_C"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="Drive BW"
+        app:layout_constraintStart_toEndOf="@+id/buttonDrive_C"
+        app:layout_constraintTop_toBottomOf="@+id/textChannelC" />
+
+    <Button
+        android:id="@+id/buttonDriveBack_B"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="Drive BW"
+        app:layout_constraintStart_toEndOf="@+id/buttonDrive_B"
+        app:layout_constraintTop_toBottomOf="@+id/textChannelB" />
+
+    <Button
+        android:id="@+id/buttonStop_B"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="Stop"
+        app:layout_constraintStart_toEndOf="@+id/buttonDriveBack_A"
+        app:layout_constraintTop_toBottomOf="@+id/textChannelB" />
+
+    <Button
+        android:id="@+id/buttonDrive_B"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="Drive FW"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textChannelB" />
+
+    <TextView
+        android:id="@+id/textChannelB"
+        android:layout_width="323dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:text="Channel B"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.244"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonDrive_A" />
+
+    <Button
+        android:id="@+id/buttonStartScan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Start Discovery"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonStopScan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Stop Discovery"
+        app:layout_constraintStart_toEndOf="@+id/buttonStartScan"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonDrive_A"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="Drive FW"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textChannelA" />
+
+    <Button
+        android:id="@+id/buttonStop_A"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="Stop"
+        app:layout_constraintStart_toEndOf="@+id/buttonDriveBack_A"
+        app:layout_constraintTop_toBottomOf="@+id/textChannelA" />
+
+    <TextView
+        android:id="@+id/textStatus"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/darker_gray"
+        android:padding="4dp"
+        android:text="Ready."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonStartScan"
+        tools:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/textChannelA"
+        android:layout_width="323dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:text="Channel A"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.288"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textStatus" />
+
+    <Button
+        android:id="@+id/buttonDriveBack_A"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="Drive BW"
+        app:layout_constraintStart_toEndOf="@+id/buttonDrive_A"
+        app:layout_constraintTop_toBottomOf="@+id/textChannelA" />
+
+</android.support.constraint.ConstraintLayout>
