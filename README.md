@@ -1,5 +1,4 @@
 # androidsbrick
-WORK IN PROGRESS! 
 Android library for making apps communicating with SBrick little easier. Current status: working, unstable.
 
 ### Prerequisites
@@ -10,21 +9,75 @@ Android library for making apps communicating with SBrick little easier. Current
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+Clone or download project. It consists of two parts:
+* **androidsbrick** library
+* **demo** application
 
-Say what the step will be
+You can compile and run project demo to see it working. For your project you'll need only androidsbrick. Copy it to your project as a module and configure project to use it as dependency.
 
+Maven and Gradle installation - in progress.
+
+## Usage
+Library comes with optional ConnectionHelper to handle SBrick connection easier. This example uses helper.
+
+### Set required permissions
+In *AndroidManifest.xml*:
 ```
-Give the example
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+```
+Note: *ACCESS_FINE_LOCATION* is needed for Bluetooth device discovery.
+
+### Declare variables
+```
+    private static final int REQUEST_ENABLE_BT = 1; // Bluetooth permissions
+    private ConnectionHelper connectionHelper;      // optional helper
+    private Map<String, SBrick> sbricks;            // will contain connected SBricks
+    private String selectedSBrickId;                // store selected SBrick ID from map above
+```
+### Implement ConnectionCallback
+It will be called when device discovery finishes scanning for SBricks or app gets asked for permissions.
+Fills variable *sbricks* with *SBrick* objects.
+```
+public class MainActivity extends AppCompatActivity
+        implements ConnectionCallback {
+        
+    public void handleSBrickCollection(Map<String, SBrick> sBrickCollection) {
+        if (sBrickCollection.isEmpty()) {
+            // SBricks not found
+            return;
+        }
+        sbricks = sBrickCollection;
+    }
+
+    public boolean handlePermissionRequests() {
+        // handle permission requests, see demo
+    }
 ```
 
-And repeat
-
+### Start SBrick discovery
+After finishing callback above will be called.
 ```
-until finished
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        ...
+        connectionHelper = new ConnectionHelper(this, this);  // params are app context and callback
+    }
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+### Control SBrick
+Send commands. See API reference below for details.
+```
+    selectedSBrickId = sbricks.keySet().iterator().next();
+    sbricks.get(selectedSBrickId)
+        .drive()
+        .channel(SBrick.CHANNEL_A, SBrick.DIR_CLOCKWISE, (byte) 0xFF)
+        .execute();
+```
+
+## API reference
+WIP
 
 ## Contributing
 
@@ -32,7 +85,7 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/salzix/androidsbrick/tags). 
+I use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/salzix/androidsbrick/tags). 
 
 ## Authors
 
@@ -43,4 +96,5 @@ See also the list of [contributors](https://github.com/salzix/androidsbrick/cont
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+SBrick trademark is owned by [Vengit](https://www.sbrick.com/)
 
