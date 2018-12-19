@@ -26,6 +26,7 @@ In *AndroidManifest.xml*:
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 ```
 Note: *ACCESS_FINE_LOCATION* is needed for Bluetooth device discovery.
 
