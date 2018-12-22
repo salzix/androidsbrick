@@ -42,7 +42,19 @@ Note: *ACCESS_FINE_LOCATION* is needed for Bluetooth device discovery.
     private Map<String, SBrick> sbricks;            // will contain discovered and connected SBricks
     private SBrick sbrick;                          // selected SBrick
 ```
-### Implement ConnectionCallback
+
+### Start SBrick discovery
+After few seconds it calls callback above.
+```
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        ...
+        connectionHelper = new ConnectionHelper(this, this);  // params are app context and callback
+        connectionHelper.scanForSBricks();                    // find SBricks, 5 seconds discovery.
+    }
+```
+
+### Receive SBrick collection in callback
 It will be called when device discovery finishes scanning for SBricks or app gets asked for permissions.
 Fills variable *sbricks* with *SBrick* objects.
 ```
@@ -56,17 +68,6 @@ public class MainActivity extends AppCompatActivity
 
     public boolean handlePermissionRequests() {
         // handle Bluetooth permission requests, see demo
-    }
-```
-
-### Start SBrick discovery
-After few seconds it calls callback above.
-```
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        ...
-        connectionHelper = new ConnectionHelper(this, this);  // params are app context and callback
-        connectionHelper.scanForSBricks();                    // find SBricks, 5 seconds discovery.
     }
 ```
 
