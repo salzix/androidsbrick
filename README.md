@@ -64,6 +64,7 @@ After finishing callback above will be called.
     protected void onCreate(Bundle savedInstanceState) {
         ...
         connectionHelper = new ConnectionHelper(this, this);  // params are app context and callback
+        connectionHelper.scanForSBricks();
     }
 ```
 
