@@ -39,7 +39,6 @@ Note: *ACCESS_FINE_LOCATION* is needed for Bluetooth device discovery.
 ### Declare variables
 ```
     private ConnectionHelper connectionHelper;      // optional helper used in this example
-    private Map<String, SBrick> sbricks;            // will contain discovered and connected SBricks
     private SBrick sbrick;                          // selected SBrick
 ```
 
@@ -65,14 +64,10 @@ public class MainActivity extends AppCompatActivity
         // optimistic scenario - at least one SBrick is found
         sbrick = sbricks.entrySet().iterator().next().getValue()
     }
-
-    public boolean handlePermissionRequests() {
-        // handle Bluetooth permission requests, see demo
-    }
 ```
 
 ### Control SBrick
-Send *drive* command to two motors:
+Send *drive* command to motor connected to channel A:
 ```
     sbrick.drive()
         .channel(SBrick.CHANNEL_A, SBrick.DIR_CLOCKWISE, (byte) 0xFF)
@@ -126,9 +121,7 @@ I use [SemVer](http://semver.org/) for versioning. For the versions available, s
 
 ## Authors
 
-* **Tomasz Węgrowski** - *Initial work* - [salzix](https://github.com/salzix)
-
-See also the list of [contributors](https://github.com/salzix/androidsbrick/contributors) who participated in this project.
+* **Tomasz Węgrowski** - [salzix](https://github.com/salzix)
 
 ## License
 
