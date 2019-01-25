@@ -1,5 +1,5 @@
 # androidsbrick
-Android library for making apps [communicating with SBrick](https://social.sbrick.com/wiki/view/pageId/11/slug/the-sbrick-ble-protocol) little easier. Allows control of multiple SBricks.
+Android library for making apps communicating with [SBrick](https://www.sbrick.com/sbrick) little easier. Allows control of multiple SBricks.
 
 Current status: working, unstable.
 
