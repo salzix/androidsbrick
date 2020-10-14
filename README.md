@@ -1,7 +1,7 @@
 # androidsbrick
-Android library for making apps communicating with [SBrick](https://www.sbrick.com/sbrick) little easier. Allows control of multiple SBricks.
+Android library to control [SBrick](https://www.sbrick.com/sbrick). Allows control of multiple SBricks. See [demo application](https://github.com/salzix/androidsbrickdemo) of library usage.
 
-Current status: supports basic control, doesn't support auth and status reads.
+Current status: provides remote control. Doesn't support quickdrive, authentication, status reads.
 
 ### Prerequisites
 * SBrick or SBrick Plus with [firmware version 17+](https://social.sbrick.com/wiki/view/pageId/11/slug/the-sbrick-ble-protocol)
@@ -10,6 +10,22 @@ Current status: supports basic control, doesn't support auth and status reads.
 * your favorite Android IDE
 
 ## Usage
+
+### Add gradle dependency
+```
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+```
+	dependencies {
+	        implementation 'com.github.salzix:androidsbrick:0.2.0'
+	}
+```
 
 ### Set required permissions
 In *AndroidManifest.xml*:
