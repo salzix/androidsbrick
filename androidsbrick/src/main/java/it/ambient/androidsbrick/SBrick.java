@@ -10,33 +10,25 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayDeque;
 import java.util.UUID;
 
+import it.ambient.androidsbrick.command.SBrickCommand;
+import it.ambient.androidsbrick.command.StopCommand;
+
 /**
- * SBrick instance. Allows sending commands to SBrick GATT service / characteristic.
+ * SBrick instance. Allows sending commands to SBrick GATT service and characteristic.
  *
  * @author Tomasz Wegrowski <tomasz.wegrowski+github@gmail.com>
  */
 public class SBrick {
     private static final String TAG = "SBrick";
-
-    public static final byte CHANNEL_A                  = 0x00;
-    public static final byte CHANNEL_B                  = 0x01;
-    public static final byte CHANNEL_C                  = 0x02;
-    public static final byte CHANNEL_D                  = 0x03;
-    public static final byte DIR_CLOCKWISE              = 0x00;
-    public static final byte DIR_COUNTER_CLOCKWISE      = 0x01;
-
     private static final UUID SERVICE_REMOTE_CONTROL
             = UUID.fromString("4dc591b0-857c-41de-b5f1-15abda665b0c");
     private static final UUID CHARACTERISTIC_REMOTE_CONTROL_COMMANDS
             = UUID.fromString("2b8cbcc-0e25-4bda-8790-a15f53e6010f");
-    private static final byte COMMAND_STOP              = 0x00;
-    private static final byte COMMAND_DRIVE             = 0x01;
+    private static final int COMMAND_BUFFER_SIZE = 3;
 
     private Context appContext;
     private BluetoothDevice bluetoothDevice;
@@ -46,9 +38,8 @@ public class SBrick {
     private boolean isConnected;
     private Handler timerHandler = new Handler();
 
-    private byte preparedCommand;
-    private Map<Byte, byte[]> channels;
-    private byte[] commandStream;
+    private ArrayDeque<byte[]> preparedStreams = new ArrayDeque<>();
+    private byte[] lastStream;
 
     /**
      * Constructor
@@ -58,120 +49,57 @@ public class SBrick {
     public SBrick(Context context, BluetoothDevice device) {
         appContext = context;
         bluetoothDevice = device;
-        stop().channelAll();
+        StopCommand stopCommand = new StopCommand();
+        stopCommand.allChannels();
+        execute(stopCommand);
         connectDevice();
     }
 
     /**
-     * Start building DRIVE command. Attach channel() methods to which command applies to.
-     * E.g.: drive().channel(...)...
-     *
-     * @return SBrick to chain channel methods
+     * Returns SBrick device id
+     * @return String SBrick id
      */
-    public SBrick drive() {
-        Log.d(TAG, "drive");
-        preparedCommand = COMMAND_DRIVE;
-        channels = new HashMap<>();
-        return this;
+    public String getId() {
+        if (bluetoothDevice == null) return null;
+        return bluetoothDevice.getAddress();
     }
 
     /**
-     * Assigns DRIVE command to channel. Set direction and power.
-     *
-     * @param channel SBrick.CHANNEL_A..D
-     * @param direction SBrick.DIR_CLOCKWISE or SBrick.DIR_COUNTER_CLOCKWISE
-     * @param power byte 0-255, eg. "(byte) 0xFF"
-     * @return SBrick to chain another channels or execute() method
-     */
-    public SBrick channel(byte channel, byte direction, byte power) {
-        byte[] part = {channel, direction, power};
-        channels.put(channel, part);
-        return this;
-    }
-
-    /**
-     * Assigns DRIVE command to all channels. Sets direction and power.
-     *
-     * @param direction SBrick.DIR_CLOCKWISE or SBrick.DIR_COUNTER_CLOCKWISE
-     * @param power byte 0-255, eg. "(byte) 0xFF"
-     * @return SBrick to chain execute() method
-     */
-    public SBrick channelAll(byte direction, byte power) {
-        for (byte channel = 0; channel <= 3; channel++) {
-            byte[] part = {channel, direction, power};
-            channels.put(channel, part);
-        }
-        return this;
-    }
-
-    /**
-     * Start building STOP command. Attach channel methods to which command applies to.
-     * E.g. drive().channel(...)...
-     *
-     * @return SBrick to chain channel methods
-     */
-    public SBrick stop() {
-        Log.d(TAG, "stop");
-        preparedCommand = COMMAND_STOP;
-        channels = new HashMap<>();
-        return this;
-    }
-
-
-    /**
-     * Assigns STOP command to channel.
-     *
-     * @param channel SBrick.CHANNEL_A..D
-     * @return SBrick to chain another channels or execute() method
-     */
-    public SBrick channel(byte channel) {
-        byte[] part = {channel};
-        channels.put(channel, part);
-        return this;
-    }
-
-    /**
-     * Assigns STOP command to all channels.
-     *
-     * @return SBrick to chain execute() method
-     */
-    public SBrick channelAll() {
-        for (byte channel = 0; channel <= 3; channel++) {
-            byte[] part = {channel};
-            channels.put(channel, part);
-        }
-        return this;
-    }
-
-    /**
-     * Glues together command and channels values, then sends it to SBrick.
-     * E.g. drive().channel(...).channel(...).execute();
+     * Sets command for execution by SBrick
+     * @param sbrickCommand command to execute
      * @return execution status
      */
-    public boolean execute() {
-        Log.d(TAG, "execute");
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        if (channels.isEmpty()) {
-            Log.e(TAG, "Command has no set channels, use channel() or channelAll() methods.");
-            return false;
-        }
+    public boolean execute(SBrickCommand sbrickCommand) {
+//        Log.d(TAG, "execute");
         try {
-            outputStream.write(preparedCommand);
-            for (byte[] part : channels.values()) {
-                outputStream.write(part);
+            if (preparedStreams.size() < COMMAND_BUFFER_SIZE) {
+                preparedStreams.addFirst(sbrickCommand.getPreparedStream());
+            } else {
+                Log.w(TAG, "SBrick buffer of 3 consecutive commands exceeded, skipping command.");
             }
         } catch (IOException e) {
-            Log.e(TAG, e.toString());       // TODO add callback to notify application
+            // Should never happen, see: https://stackoverflow.com/questions/6271934/java-ioexception-when-writing-to-a-bytearrayoutputstream
+            Log.e(TAG, e.toString());
             return false;
         }
-        Log.d(TAG, " - outputStream: " + outputStream.toString());
-        commandStream = outputStream.toByteArray();
-        characteristicRemoteControl.setValue(commandStream);
+        return true;
+    }
+
+    /**
+     * Sends prepared command to SBrick, used by timerCommandRepeater
+     * @return execution status
+     */
+    private boolean timedExecute() {
+//        Log.d(TAG, " - timedExecute: " + preparedStream.toString());
+        if (!preparedStreams.isEmpty()) {
+            lastStream = preparedStreams.pollLast();
+        }
+        characteristicRemoteControl.setValue(lastStream);
         return gatt.writeCharacteristic(characteristicRemoteControl);
     }
 
     private void connectDevice() {
-        Log.d(TAG, "connectDevice");
+//        Log.d(TAG, "connectDevice");
         GattClientCallback gattClientCallback = new GattClientCallback();
         gatt = bluetoothDevice.connectGatt(appContext, false, gattClientCallback);
     }
@@ -181,7 +109,7 @@ public class SBrick {
     }
 
     private void disconnectGattServer() {
-        Log.d(TAG, "disconnectGattServer");
+//        Log.d(TAG, "disconnectGattServer");
         timerHandler.removeCallbacks(timerCommandRepeater);
         setConnected(false);
         if (gatt != null) {
@@ -192,17 +120,17 @@ public class SBrick {
 
     /**
      * SBrick by default disconnects after few seconds if not receiving commands.
-     * This Runnable repeats last command every 250ms to prevent disconnection.
+     * This Runnable repeats last command every 200ms to prevent disconnection.
      */
     private Runnable timerCommandRepeater = new Runnable() {
         @Override
         public void run() {
             if (isConnected) {
-                execute();
+                timedExecute();
             } else {
                 Log.d(TAG, "TIMER skip - SBrick is disconnected");
             }
-            timerHandler.postDelayed(this, 250);
+            timerHandler.postDelayed(this, 200);
         }
     };
 
@@ -213,25 +141,25 @@ public class SBrick {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             super.onConnectionStateChange(gatt, status, newState);
-            Log.i(TAG, "onConnectionStateChange newState: " + newState);
+            Log.d(TAG, "onConnectionStateChange newState: " + newState);
 
             if (status == BluetoothGatt.GATT_FAILURE) {
-                Log.e(TAG, "Connection Gatt failure status " + status);
+                Log.e(TAG, "Connection GATT_FAILURE status " + status);
                 disconnectGattServer();
                 return;
             } else if (status != BluetoothGatt.GATT_SUCCESS) {
                 // handle anything not SUCCESS as failure
-                Log.e(TAG,"Connection not GATT sucess status " + status);
+                Log.e(TAG,"Connection not GATT_SUCCESS status " + status);
                 disconnectGattServer();
                 return;
             }
 
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Log.i(TAG,"Connected to device " + gatt.getDevice().getAddress());
+                Log.d(TAG,"Connected to device " + gatt.getDevice().getAddress());
                 setConnected(true);
                 gatt.discoverServices();
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                Log.i(TAG,"Disconnected from device");
+                Log.d(TAG,"Disconnected from device");
                 disconnectGattServer();
             }
         }

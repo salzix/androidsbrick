@@ -1,1 +1,1 @@
-include ':demo', ':androidsbrick'
+include ':androidsbrick'
