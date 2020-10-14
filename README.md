@@ -67,12 +67,6 @@ Send *rotate* command with full power to motors connected to channel A:
 ### Helper constants
 They are used as channel params for easier to read code. You can omit them and use Int values.
 
-*Channel selectors:*
-* **SBrickCommand.CHANNEL_A**             = 0
-* **SBrickCommand.CHANNEL_B**             = 1
-* **SBrickCommand.CHANNEL_C**             = 2
-* **SBrickCommand.CHANNEL_D**             = 3
-
 *Direction selectors:*
 * **RotateCommand.DIR_CLOCKWISE**         = 0
 * **RotateCommand.DIR_COUNTER_CLOCKWISE** = 1
